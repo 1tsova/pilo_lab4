@@ -1,15 +1,15 @@
 class TreeNode:
-    def __init__(self):
+    def __init__(self): # конструктор
         self.data = ""
         self.left = ""
         self.right = ""
 
-    def set_data(self, data, left, right):
+    def set_data(self, data, left, right): 
         self.data = data
         self.left = left
         self.right = right        
     
-    def printNode(self):
+    def printNode(self): # даже не пытайся вникать в суть этой функции, я сама тут перестала что-то понимать
         
         global d
         
@@ -40,27 +40,27 @@ class TreeNode:
     def parse(self):
         s = self.data
                 
-        s = brackets(s)           
+        s = brackets(s)           # убираем внешние скобки
         
         p1, p2 = len(s)-1, len(s)+3
         i=len(s)-1
         
         
-        while i>=0:
+        while i>=0:               # сложение и вычитаение (бинарное), ищем с конца
             if s[i] == ')':     
-                i = skip(s, i-1)+1
-            elif s[i] == '+' or ((s[i] == '-') and (i != 0) and (s[i-1] != '(')):                
+                i = skip(s, i-1)+1 # пропускаем внутренности скобок
+            elif s[i] == '+' or ((s[i] == '-') and (i != 0) and (s[i-1] != '(')):   # проверяем, что минус не унарный             
                 p1 = p2-2                         
                 p2 = i+1
                 
-                tempL = TreeNode()
+                tempL = TreeNode()                  
                 tempR = TreeNode()
                 tempL.set_data(s[:p2-1], '', '')
                 tempR.set_data(s[p2:p1+1], '', '')
                 
                 self.set_data(s[i], tempL, tempR)
                 
-                self.left.parse()
+                self.left.parse()   # рекурсивно вызываем эту функцию от ее новоиспеченных листов
                 self.right.parse()
                 return 0
             i-=1
@@ -68,7 +68,7 @@ class TreeNode:
         p1, p2 = len(s)-1, len(s)+3
         i=len(s)-1        
         
-        while i>=0:
+        while i>=0:                         # умножение и деление
             if s[i] == ')':        
                 i = skip(s, i-1)+1
             elif s[i] == '*' or s[i] == '/':                      
@@ -87,7 +87,7 @@ class TreeNode:
                 return 0
             i-=1            
         
-        if s[0] == '-':                
+        if s[0] == '-':                #унаный минус
                 tempL = TreeNode()
                 tempL.set_data(s[1:], '', '')
                 
@@ -100,7 +100,7 @@ class TreeNode:
             
 
 
-def skip(s, i):         
+def skip(s, i):         # пропуск внутренних скобок
     ch = 1
     while (i >=0) and (ch!=0):
         if s[i] == ')':
@@ -110,7 +110,7 @@ def skip(s, i):
         i-=1        
     return i
 
-def brackets(s):        
+def brackets(s):        # отбрасывание внешних скобок
     if (s[0] == '(') and (s[len(s)-1] == ')'):
         ch=1
         i = 1
@@ -127,7 +127,7 @@ def brackets(s):
     else:
         return s
 
-def isId(s):
+def isId(s): # провека на то, что идентификатор норм 
     lett = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
     numb = '0123456789'
     if s[0] not in lett:
@@ -138,23 +138,23 @@ def isId(s):
     return True
 print('Enter a string: ')
 S = input()
-d = -1
-S = ''.join(S.split()) 
-parts = S.split('=')
-if len(parts)>2:
+d = -1 # глубина листа (нужно для вывода)
+S = ''.join(S.split()) # убираем все пробелы
+parts = S.split('=') # разделяем строку по знаку "="
+if len(parts)>2:    # если частей больше 2, то и "=" было не одно
     print('In this string more than one "="')
-elif len(parts)<2:
+elif len(parts)<2:  # если меньше 2, то "=" не было
     print('This string has no "="')
-elif not(isId(parts[0])):
+elif not(isId(parts[0])):      # если справа от "=" неправильный идентификатор
     print('It is not ID on the left of "="')
 else:
-    node = TreeNode()
+    node = TreeNode() # создаем корень
     tempL = TreeNode()
     tempR = TreeNode()
-    tempL.set_data(parts[0], '', '')
+    tempL.set_data(parts[0], '', '') 
     tempR.set_data(parts[1], '', '')    
     node.set_data('=', tempL, tempR)
-    node.right.parse()
+    node.right.parse()      # парсим правую часть (левая - идентификатор)
     node.printNode()    
     
 
